@@ -1,0 +1,6 @@
+# Node & TypeScript
+node_modules/
+dist/
+*.log
+.env
+prisma/dev.db
