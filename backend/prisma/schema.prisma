@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Location {
+  id          String  @id @default(uuid())
+  name        String
+  type        String // e.g., "city", "dungeon", "forest shrine"
+  description String
+  isPublished Boolean @default(false)
+  dmSecrets   String?
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  npcs NPC[]
+}
+
+model NPC {
+  id          String  @id @default(uuid())
+  name        String
+  role        String? // e.g., "blacksmith", "guard", "cult leader"
+  description String
+  isPublished Boolean @default(false)
+  dmSecrets   String?
+
+  locationId String?
+  location   Location? @relation(fields: [locationId], references: [id])
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Organization {
+  id          String  @id @default(uuid())
+  name        String
+  type        String // e.g., "guild", "religion", "thieves", "merchant league"
+  description String
+  isPublished Boolean @default(false)
+  dmSecrets   String?
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  locations     Location[]
+  npcs          NPC[]
+  organizations Organization[]
+  notes         PlayerNote[]
+}
+
+model PlayerNote {
+  id         String   @id @default(uuid())
+  note       String
+  campaignId String
+  contentId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+}
+
+enum Role {
+  dm
+  player
+}
