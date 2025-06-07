@@ -68,7 +68,14 @@ npm install
 
 This `postinstall` step runs `prisma generate` to create the client.
 
-### 4. Build & Start the App
+### 4. Install Frontend Dependencies
+
+```bash
+cd frontend
+npm install
+```
+
+### 5. Build & Start the App
 
 ```bash
 docker compose up --build
@@ -81,7 +88,7 @@ This will:
 
 ---
 
-### 5. Test URLs
+### 6. Test URLs
 
 - ✅ Backend test: [http://localhost:4000/hello](http://localhost:4000/hello)
 - ✅ Frontend test: [http://localhost:5173](http://localhost:5173)
